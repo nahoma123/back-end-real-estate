@@ -3,7 +3,6 @@ package initiator
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,24 +15,21 @@ import (
 
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"github.com/robfig/cron"
 	"github.com/spf13/viper"
 
 	// "github.com/swaggo/gin-swagger"s
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 )
 
 // gin-swagger middleware
 
 func Initiate() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal(context.Background(), "Error loading .env file")
-	}
+	// err := godotenv.Load(".env")
+	// if err != nil {
+	// 	log.Fatal(context.Background(), "Error loading .env file")
+	// }
 
 	log := logger.New(InitLogger())
 	log.Info(context.Background(), "logger initialized")
@@ -49,20 +45,10 @@ func Initiate() {
 	log.Info(context.Background(), "config initialized")
 
 	log.Info(context.Background(), "initializing database")
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(constant.GetConfig().DATABASE_URL))
-	if err != nil {
-		panic(err)
-	}
-	defer func() {
-		if err := client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
 
 	log.Info(context.Background(), "database initialized")
 
 	log.Info(context.Background(), "initializing migration")
-	InitiateMigration("", constant.GetConfig().DATABASE_URL, log)
 	log.Info(context.Background(), "migration initialized")
 
 	log.Info(context.Background(), "initializing persistence layer")
@@ -73,6 +59,8 @@ func Initiate() {
 	if err != nil {
 		panic(err)
 	}
+	InitiateMigration(db, log)
+
 	CreateIndexes(log, db)
 
 	persistence := InitPersistence(db, log)

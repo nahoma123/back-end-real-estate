@@ -5,38 +5,23 @@ import (
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type User struct {
-	Id primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
-	// FirstName is the first name of the user.
-	UserID    string `bson:"user_id,omitempty" json:"user_id"`
-	FirstName string `bson:"first_name,omitempty"  json:"first_name,omitempty"`
-	// MiddleName is the middle name of the user.
-	MiddleName string `bson:"middle_name,omitempty" json:"middle_name,omitempty"`
-	// LastName is the last name of the user.
-	LastName string `bson:"last_name,omitempty" json:"last_name,omitempty"`
-	// Email is the email of the user.
-	Email string `bson:"email,omitempty" json:"email,omitempty"`
-
-	EnrollmentID string `bson:"enrollment,omitempty" json:"enrollment,omitempty"`
-
-	// Phone is the phone of the user.
-	Phone string `bson:"phone,omitempty" json:"phone,omitempty"`
-	// Password is the password of the user.
-	// It is only used for logging in with email
-	Password string `bson:"password,omitempty" json:"password,omitempty"`
-	// UserName is the username of the user.
-	// It is currently of no use
-	UserName string `bson:"user_name,omitempty" json:"user_name,omitempty"`
-	// Gender is the gender of the user.
-	Gender string `bson:"gender,omitempty" json:"gender,omitempty"`
-
-	Status string `bson:"status" json:"status"`
-
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Id           uint      `gorm:"primaryKey" json:"id,omitempty"`
+	UserID       string    `gorm:"column:user_id" json:"user_id,omitempty"`
+	FirstName    string    `gorm:"column:first_name" json:"first_name,omitempty"`
+	MiddleName   string    `gorm:"column:middle_name" json:"middle_name,omitempty"`
+	LastName     string    `gorm:"column:last_name" json:"last_name,omitempty"`
+	Email        string    `gorm:"column:email" json:"email,omitempty"`
+	EnrollmentID string    `gorm:"column:enrollment" json:"enrollment,omitempty"`
+	Phone        string    `gorm:"column:phone" json:"phone,omitempty"`
+	Password     string    `gorm:"column:password" json:"password,omitempty"`
+	UserName     string    `gorm:"column:user_name" json:"user_name,omitempty"`
+	Gender       string    `gorm:"column:gender" json:"gender,omitempty"`
+	Status       string    `gorm:"column:status" json:"status,omitempty"`
+	CreatedAt    time.Time `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt    time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
 
 func (u User) Validate() error {
