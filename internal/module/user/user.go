@@ -10,6 +10,7 @@ import (
 
 func (o *user) RegisterUser(ctx context.Context, user *model.User) (*model.User, error) {
 	//
+
 	if err := user.Validate(); err != nil {
 		err = errors.ErrInvalidInput.Wrap(err, "invalid input")
 		o.logger.Info(ctx, "invalid input", zap.Error(err))

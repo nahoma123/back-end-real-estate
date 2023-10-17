@@ -8,6 +8,7 @@ import (
 	"visitor_management/internal/storage"
 	"visitor_management/platform/logger"
 
+	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
@@ -76,9 +77,12 @@ func (g generic) CreateOne(ctx context.Context, tableName string, data interface
 	create := g.db.Table(tableName).Create(data)
 	if create.Error != nil {
 		logger.Log().Error(ctx, create.Error.Error())
-		if gorm.ErrRecordNotFound == (create.Error) {
+
+		if pqErr, ok := create.Error.(*pq.Error); ok && pqErr.Code == "23505" {
+			// Handle duplicate key error
 			return errors.ErrDataExists.Wrap(fmt.Errorf("%s", fmt.Sprintf(errors.TemplateAlreadyRegistered, tableName)), fmt.Sprintf(errors.TemplateAlreadyRegistered, tableName))
 		}
+
 		return errors.ErrInternalServerError.New("unknown error occurred")
 	}
 
