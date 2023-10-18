@@ -11,7 +11,7 @@ import (
 )
 
 type AuthMiddleware interface {
-	Authentication() gin.HandlerFunc
+	Authentication(admin ...bool) gin.HandlerFunc
 	BindUser(id string) gin.HandlerFunc
 }
 
@@ -28,7 +28,7 @@ func InitAuthMiddleware(
 	}
 }
 
-func (a *authMiddleware) Authentication() gin.HandlerFunc {
+func (a *authMiddleware) Authentication(admin ...bool) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		bearer := "Bearer "
 		authHeader := ctx.GetHeader("Authorization")
@@ -49,8 +49,14 @@ func (a *authMiddleware) Authentication() gin.HandlerFunc {
 		}
 		userId, ok := (*claims)["user_id"].(string)
 		if !ok {
-
 			// userId is not present in the claims or not in the correct format
+		}
+
+		if len(admin) > 0 && admin[0] && (*claims)["role"] != "ADMIN_ROLE" {
+			Err := errors.ErrAuthError.New("Unauthorized. Only ADMIN_ROLE allowed.")
+			ctx.Error(Err)
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+			return
 		}
 
 		// userStatus, err := a.auth.GetUserStatus(ctx.Request.Context(), userId)
