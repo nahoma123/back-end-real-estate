@@ -5,27 +5,32 @@ import (
 	"visitor_management/internal/constant"
 	"visitor_management/internal/constant/errors"
 	"visitor_management/internal/constant/model"
-	"visitor_management/internal/handler/rest"
-	"visitor_management/internal/module"
+	userM "visitor_management/internal/module/user"
 	"visitor_management/platform/logger"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
-type user struct {
-	logger     logger.Logger
-	UserModule module.UserModule
+type UserHandlerWrapper struct {
+	*user
 }
 
-func InitUser(logger logger.Logger, userModule module.UserModule) rest.User {
-	return &user{
-		logger,
-		userModule,
+type user struct {
+	logger     logger.Logger
+	UserModule userM.UserModuleWrapper
+}
+
+func InitUser(logger logger.Logger, userModule userM.UserModuleWrapper) *UserHandlerWrapper {
+	return &UserHandlerWrapper{
+		&user{
+			logger,
+			userModule,
+		},
 	}
 }
 
-func (o *user) Register(ctx *gin.Context) {
+func (o *UserHandlerWrapper) Register(ctx *gin.Context) {
 	user := &model.User{}
 	err := ctx.ShouldBind(&user)
 	if err != nil {
@@ -44,7 +49,7 @@ func (o *user) Register(ctx *gin.Context) {
 	constant.SuccessResponse(ctx, http.StatusCreated, user, nil)
 }
 
-func (o *user) UpdateUser(ctx *gin.Context) {
+func (o *UserHandlerWrapper) UpdateUser(ctx *gin.Context) {
 	user := &model.User{}
 	err := ctx.ShouldBind(&user)
 	id := ctx.GetString("x-user-id")
@@ -64,7 +69,7 @@ func (o *user) UpdateUser(ctx *gin.Context) {
 	constant.SuccessResponse(ctx, http.StatusCreated, user, nil)
 }
 
-func (o *user) GetUser(ctx *gin.Context) {
+func (o *UserHandlerWrapper) GetUser(ctx *gin.Context) {
 	id := ctx.Param("id")
 	user, err := o.UserModule.GetUser(ctx, id)
 	if err != nil {
@@ -76,7 +81,7 @@ func (o *user) GetUser(ctx *gin.Context) {
 	constant.SuccessResponse(ctx, http.StatusOK, user, nil)
 }
 
-func (o *user) Login(ctx *gin.Context) {
+func (o *UserHandlerWrapper) Login(ctx *gin.Context) {
 	user := &model.User{}
 	err := ctx.Bind(user)
 	if err != nil {
@@ -95,7 +100,7 @@ func (o *user) Login(ctx *gin.Context) {
 	constant.SuccessResponse(ctx, http.StatusOK, auth, nil)
 }
 
-func (o *user) GetUsers(ctx *gin.Context) {
+func (o *UserHandlerWrapper) GetUsers(ctx *gin.Context) {
 	ftr := constant.ParseFilterPagination(ctx)
 
 	states, err := o.UserModule.GetAll(ctx, ftr)
@@ -108,7 +113,7 @@ func (o *user) GetUsers(ctx *gin.Context) {
 	constant.SuccessResponse(ctx, http.StatusOK, states, ftr)
 }
 
-func (o *user) CreatePasswordResetRequest(ctx *gin.Context) {
+func (o *UserHandlerWrapper) CreatePasswordResetRequest(ctx *gin.Context) {
 	userID := ctx.GetString("x-user-id")
 	err := o.UserModule.CreatePasswordResetRequest(ctx, userID)
 	if err != nil {
@@ -120,7 +125,7 @@ func (o *user) CreatePasswordResetRequest(ctx *gin.Context) {
 	constant.SuccessResponse(ctx, http.StatusOK, "successfully requested password reset", nil)
 }
 
-func (o *user) VerifyResetCode(ctx *gin.Context) {
+func (o *UserHandlerWrapper) VerifyResetCode(ctx *gin.Context) {
 	user := &model.User{}
 	err := ctx.Bind(user)
 	if err != nil {
@@ -131,6 +136,43 @@ func (o *user) VerifyResetCode(ctx *gin.Context) {
 	userID := ctx.GetString("x-user-id")
 	user.UserID = userID
 	err = o.UserModule.VerifyResetCode(ctx, user.ResetCode, userID, user.Password)
+	if err != nil {
+		o.logger.Info(ctx, zap.Error(err).String)
+		_ = ctx.Error(err)
+		return
+	}
+
+	constant.SuccessResponse(ctx, http.StatusOK, "password changed successful", nil)
+}
+
+func (o *UserHandlerWrapper) ForgotPassword(ctx *gin.Context) {
+	user := &model.User{}
+	err := ctx.Bind(user)
+	if err != nil {
+		o.logger.Info(ctx, zap.Error(err).String)
+		_ = ctx.Error(err)
+		return
+	}
+
+	err = o.UserModule.ForgotPasswordResetRequest(ctx, user.Email)
+	if err != nil {
+		o.logger.Info(ctx, zap.Error(err).String)
+		_ = ctx.Error(err)
+		return
+	}
+
+	constant.SuccessResponse(ctx, http.StatusOK, "successfully requested password reset", nil)
+}
+
+func (o *UserHandlerWrapper) VerifyForgotPassword(ctx *gin.Context) {
+	user := &model.User{}
+	err := ctx.Bind(user)
+	if err != nil {
+		o.logger.Info(ctx, zap.Error(err).String)
+		_ = ctx.Error(err)
+		return
+	}
+	err = o.UserModule.VerifyForgetPasswordCode(ctx, user.ResetCode, user.Email, user.Password)
 	if err != nil {
 		o.logger.Info(ctx, zap.Error(err).String)
 		_ = ctx.Error(err)

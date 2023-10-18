@@ -9,8 +9,7 @@ import (
 
 type Module struct {
 	// TODO implement
-	UserModule    module.UserModule
-	EstateModule  module.EstateModule
+	UserModule    user.UserModuleWrapper
 	GenericModule module.GenericModule
 }
 

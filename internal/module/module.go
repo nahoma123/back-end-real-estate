@@ -26,6 +26,8 @@ type UserModule interface {
 
 	CreatePasswordResetRequest(ctx context.Context, userId string) error
 	VerifyResetCode(ctx context.Context, userCode int, userId, newPassword string) error
+
+	ForgotPasswordResetRequest(ctx context.Context, email string) error
 }
 
 type EstateModule interface {

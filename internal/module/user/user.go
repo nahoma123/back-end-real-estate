@@ -138,3 +138,57 @@ func (o *user) SendEmail(to, subject, body string) error {
 	}
 	return nil
 }
+
+func (o *UserModuleWrapper) VerifyForgetPasswordCode(ctx context.Context, userCode int, email, newPassword string) error {
+	user := &model.User{}
+	err := o.generic.GetOne(ctx, string(storage.Users), user, "email", email)
+	if err != nil {
+		o.logger.Warn(ctx, err.Error())
+		return err
+	}
+	hash, err := persistence.HashPassword(newPassword)
+	if err != nil {
+		logger.Log().Error(ctx, err.Error())
+		return errors.ErrInvalidInput.New(errors.UnknownDbError)
+	}
+
+	user.Password = hash
+
+	if user.ResetCode == userCode && userCode != 0 {
+		user.ResetCode = 0
+		err = o.generic.UpdateOne(ctx, string(storage.Users), user, "user_id", user.UserID)
+		if err != nil {
+			o.logger.Warn(ctx, err.Error())
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *user) ForgotPasswordResetRequest(ctx context.Context, email string) error {
+	user := &model.User{}
+	user.Email = email
+	user.ResetCode = constant.RandomSixDigitNumber()
+	err := o.generic.UpdateOne(ctx, string(storage.Users), user, "email", email)
+	if err != nil {
+		o.logger.Warn(ctx, err.Error())
+		return err
+	}
+	err = o.generic.GetOne(ctx, string(storage.Users), user, "email", email)
+	if err != nil {
+		o.logger.Warn(ctx, err.Error())
+		return err
+	}
+
+	err = o.generic.UpdateOne(ctx, string(storage.Users), user, "email", email)
+	if err != nil {
+		o.logger.Warn(ctx, err.Error())
+		return err
+	}
+
+	// error is igonored to prevent revealing internal server error message
+	o.SendEmail(user.Email, "Password Reset Code", fmt.Sprintf("You password reset code is %d", user.ResetCode))
+	// send email
+	return nil
+}

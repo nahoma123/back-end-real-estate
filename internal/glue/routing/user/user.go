@@ -69,6 +69,24 @@ func InitRoute(router *gin.RouterGroup, handler rest.User, authMiddleware middle
 				authMiddleware.Authentication(),
 			},
 		},
+
+		//
+		{
+			Method:      "POST",
+			Path:        "/users/request_forgot_password",
+			Handler:     handler.ForgotPassword,
+			Middlewares: []gin.HandlerFunc{
+				// authMiddleware.Authentication(),
+			},
+		},
+		{
+			Method:      "POST",
+			Path:        "/users/verify_forgot_password",
+			Handler:     handler.VerifyForgotPassword,
+			Middlewares: []gin.HandlerFunc{
+				// authMiddleware.Authentication(),
+			},
+		},
 	}
 	routing.RegisterRoutes(router, userRoutes)
 }

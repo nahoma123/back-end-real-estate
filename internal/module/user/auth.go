@@ -11,18 +11,22 @@ import (
 	"visitor_management/platform/logger"
 )
 
+type UserModuleWrapper struct {
+	*user
+}
+
 type user struct {
 	logger      logger.Logger
 	userStorage storage.UserStorage
 	generic     storage.GenericStorage
 }
 
-func InitOAuth(logger logger.Logger, generic storage.GenericStorage, userStorage storage.UserStorage) module.UserModule {
-	return &user{
+func InitOAuth(logger logger.Logger, generic storage.GenericStorage, userStorage storage.UserStorage) UserModuleWrapper {
+	return UserModuleWrapper{&user{
 		logger,
 		userStorage,
 		generic,
-	}
+	}}
 }
 
 func (o *user) VerifyUserStatus(ctx context.Context, phone string) error {

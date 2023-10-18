@@ -13,6 +13,9 @@ type User interface {
 
 	CreatePasswordResetRequest(ctx *gin.Context)
 	VerifyResetCode(ctx *gin.Context)
+
+	VerifyForgotPassword(ctx *gin.Context)
+	ForgotPassword(ctx *gin.Context)
 }
 
 type Estate interface {
