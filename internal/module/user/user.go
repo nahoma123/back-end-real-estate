@@ -38,11 +38,11 @@ func (o *user) UpdateUser(ctx context.Context, user *model.User) (*model.User, e
 	// 	return nil, err
 	// }
 
-	// user, err := o.userStorage.Update(ctx, user)
-	// if err != nil {
-	// 	o.logger.Warn(ctx, err.Error())
-	// 	return nil, err
-	// }
+	err := o.generic.UpdateOne(ctx, "users", user, "user_id", user.UserID)
+	if err != nil {
+		o.logger.Warn(ctx, err.Error())
+		return nil, err
+	}
 	return nil, nil
 }
 

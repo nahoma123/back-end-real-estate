@@ -47,7 +47,7 @@ func (o *user) Register(ctx *gin.Context) {
 func (o *user) UpdateUser(ctx *gin.Context) {
 	user := &model.User{}
 	err := ctx.ShouldBind(&user)
-	id := ctx.Param("id")
+	id := ctx.GetString("x-user-id")
 	if err != nil || id == "" {
 		o.logger.Info(ctx, zap.Error(err).String)
 		_ = ctx.Error(errors.ErrInvalidInput.Wrap(err, "invalid input"))
