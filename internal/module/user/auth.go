@@ -14,12 +14,14 @@ import (
 type user struct {
 	logger      logger.Logger
 	userStorage storage.UserStorage
+	generic     storage.GenericStorage
 }
 
-func InitOAuth(logger logger.Logger, userStorage storage.UserStorage) module.UserModule {
+func InitOAuth(logger logger.Logger, generic storage.GenericStorage, userStorage storage.UserStorage) module.UserModule {
 	return &user{
 		logger,
 		userStorage,
+		generic,
 	}
 }
 

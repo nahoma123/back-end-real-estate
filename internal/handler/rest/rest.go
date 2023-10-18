@@ -10,6 +10,9 @@ type User interface {
 	GetUser(ctx *gin.Context)
 	GetUsers(ctx *gin.Context)
 	Login(ctx *gin.Context)
+
+	CreatePasswordResetRequest(ctx *gin.Context)
+	VerifyResetCode(ctx *gin.Context)
 }
 
 type Estate interface {

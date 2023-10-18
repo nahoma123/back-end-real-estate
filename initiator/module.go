@@ -18,7 +18,7 @@ func InitModule(persistence Persistence, privateKeyPath string, platformLayer Pl
 
 	gmod := gMod.InitGenericModule(log, persistence.Generic)
 	return Module{
-		UserModule:    user.InitOAuth(log, persistence.User),
+		UserModule:    user.InitOAuth(log, persistence.Generic, persistence.User),
 		GenericModule: gmod,
 	}
 }

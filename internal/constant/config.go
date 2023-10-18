@@ -17,6 +17,9 @@ type Config struct {
 	CLOUDINARY_URL         string
 	CLOUDINARY_FOLDER      string
 
+	ORGANIZATION_EMAIL_EMAIL    string
+	ORGANIZATION_EMAIL_PASSWORD string
+
 	DB_HOST     string
 	DB_USER     string
 	DB_PASSWORD string
@@ -66,5 +69,16 @@ func GetConfig() Config {
 		log.Fatal(context.Background(), fmt.Sprintf("environment variable not found %s", "PORT"))
 	}
 
+	// ORGANIZATION_EMAIL_EMAIL
+	config.ORGANIZATION_EMAIL_EMAIL = os.Getenv("ORGANIZATION_EMAIL_EMAIL")
+	if config.ORGANIZATION_EMAIL_EMAIL == "" {
+		log.Fatal(context.Background(), fmt.Sprintf("environment variable not found %s", "ORGANIZATION_EMAIL_EMAIL"))
+	}
+
+	// ORGANIZATION_EMAIL_PASSWORD
+	config.ORGANIZATION_EMAIL_PASSWORD = os.Getenv("ORGANIZATION_EMAIL_PASSWORD")
+	if config.ORGANIZATION_EMAIL_PASSWORD == "" {
+		log.Fatal(context.Background(), fmt.Sprintf("environment variable not found %s", "ORGANIZATION_EMAIL_PASSWORD"))
+	}
 	return config
 }

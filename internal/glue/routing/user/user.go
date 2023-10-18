@@ -45,6 +45,30 @@ func InitRoute(router *gin.RouterGroup, handler rest.User, authMiddleware middle
 				authMiddleware.Authentication(),
 			},
 		},
+		{
+			Method:  "POST",
+			Path:    "/users/request_password_reset",
+			Handler: handler.CreatePasswordResetRequest,
+			Middlewares: []gin.HandlerFunc{
+				authMiddleware.Authentication(),
+			},
+		},
+		{
+			Method:  "POST",
+			Path:    "/users/verify_reset_code",
+			Handler: handler.VerifyResetCode,
+			Middlewares: []gin.HandlerFunc{
+				authMiddleware.Authentication(),
+			},
+		},
+		{
+			Method:  "PATCH",
+			Path:    "/users/my_profile",
+			Handler: handler.UpdateUser,
+			Middlewares: []gin.HandlerFunc{
+				authMiddleware.Authentication(),
+			},
+		},
 	}
 	routing.RegisterRoutes(router, userRoutes)
 }

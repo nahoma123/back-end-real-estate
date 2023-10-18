@@ -107,3 +107,35 @@ func (o *user) GetUsers(ctx *gin.Context) {
 
 	constant.SuccessResponse(ctx, http.StatusOK, states, ftr)
 }
+
+func (o *user) CreatePasswordResetRequest(ctx *gin.Context) {
+	userID := ctx.GetString("x-user-id")
+	err := o.UserModule.CreatePasswordResetRequest(ctx, userID)
+	if err != nil {
+		o.logger.Info(ctx, zap.Error(err).String)
+		_ = ctx.Error(err)
+		return
+	}
+
+	constant.SuccessResponse(ctx, http.StatusOK, "successfully requested password reset", nil)
+}
+
+func (o *user) VerifyResetCode(ctx *gin.Context) {
+	user := &model.User{}
+	err := ctx.Bind(user)
+	if err != nil {
+		o.logger.Info(ctx, zap.Error(err).String)
+		_ = ctx.Error(err)
+		return
+	}
+	userID := ctx.GetString("x-user-id")
+	user.UserID = userID
+	err = o.UserModule.VerifyResetCode(ctx, user.ResetCode, userID, user.Password)
+	if err != nil {
+		o.logger.Info(ctx, zap.Error(err).String)
+		_ = ctx.Error(err)
+		return
+	}
+
+	constant.SuccessResponse(ctx, http.StatusOK, "password changed successful", nil)
+}

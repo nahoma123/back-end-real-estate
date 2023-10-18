@@ -23,6 +23,9 @@ type UserModule interface {
 	RegisterUser(ctx context.Context, profile *model.User) (*model.User, error)
 	UpdateUser(ctx context.Context, profile *model.User) (*model.User, error)
 	GetAll(ctx context.Context, filterPagination *constant.FilterPagination) ([]model.User, error)
+
+	CreatePasswordResetRequest(ctx context.Context, userId string) error
+	VerifyResetCode(ctx context.Context, userCode int, userId, newPassword string) error
 }
 
 type EstateModule interface {
