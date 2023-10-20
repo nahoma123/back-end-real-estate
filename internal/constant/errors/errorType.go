@@ -61,6 +61,10 @@ var Error = []ErrorType{
 		ErrorType: ErrInvalidToken,
 	},
 	{
+		ErrorCode: http.StatusBadRequest,
+		ErrorType: ErrResetCodeInvalid,
+	},
+	{
 		ErrorCode: http.StatusInternalServerError,
 		ErrorType: ErrOTPGenerate,
 	},
@@ -74,7 +78,7 @@ var Error = []ErrorType{
 	},
 	{
 		ErrorCode: http.StatusForbidden,
-		ErrorType: ErrAcessError,
+		ErrorType: ErrAccessError,
 	},
 }
 
@@ -91,6 +95,7 @@ var (
 var (
 	ErrInvalidInput        = errorx.NewType(invalidInput, "invalid input")
 	ErrInviteCodeInvalid   = errorx.NewType(invalidInput, "invite code is invalid")
+	ErrResetCodeInvalid    = errorx.NewType(invalidInput, "reset code is invalid")
 	ErrNoRecordFound       = errorx.NewType(dbError, "no record found")
 	ErrWriteError          = errorx.NewType(dbError, "could not write to db")
 	ErrReadError           = errorx.NewType(dbError, "could not read from db")
@@ -104,5 +109,5 @@ var (
 	ErrOTPGenerate         = errorx.NewType(serverError, "couldn't generate otp")
 	ErrSMSSend             = errorx.NewType(serverError, "couldn't send sms")
 	ErrAuthError           = errorx.NewType(unauthorized, "you are not authorized.")
-	ErrAcessError          = errorx.NewType(errorx.CommonErrors, "Unauthorized", AccessDenied)
+	ErrAccessError         = errorx.NewType(errorx.CommonErrors, "Unauthorized", AccessDenied)
 )

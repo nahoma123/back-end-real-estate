@@ -163,7 +163,7 @@ func (o *UserModuleWrapper) VerifyForgetPasswordCode(ctx context.Context, userCo
 		}
 	}
 
-	return nil
+	return errors.ErrResetCodeInvalid.New("invalid invite code entered")
 }
 
 func (o *user) ForgotPasswordResetRequest(ctx context.Context, email string) error {

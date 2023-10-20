@@ -43,7 +43,7 @@ func ErrorHandler() gin.HandlerFunc {
 			}
 			constant.ErrorResponse(c, &model.ErrorResponse{
 				Code:    http.StatusInternalServerError,
-				Message: "Unknown server error",
+				Message: "unable to process request",
 			})
 			return
 		}

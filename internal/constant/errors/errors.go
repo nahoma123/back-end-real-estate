@@ -8,7 +8,7 @@ const (
 	RecordNotfound                           = "record not found"
 	FeildIsRequired                          = "%s is required"
 	IsRequired                               = "%s is required"
-	TemplateAlreadyRegistered                = "%s is already submitted"
+	TemplateAlreadyRegistered                = "%s is already registered"
 
 	CountryIsAlreadyRegistered         = "country is already registered"
 	StateIsAlreadyRegistered           = "state is already registered"

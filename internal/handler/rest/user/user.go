@@ -179,5 +179,5 @@ func (o *UserHandlerWrapper) VerifyForgotPassword(ctx *gin.Context) {
 		return
 	}
 
-	constant.SuccessResponse(ctx, http.StatusOK, "password changed successful", nil)
+	constant.SuccessResponse(ctx, http.StatusOK, "password reset successful", nil)
 }

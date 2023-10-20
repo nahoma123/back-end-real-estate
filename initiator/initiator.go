@@ -16,7 +16,6 @@ import (
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/robfig/cron"
-	"github.com/spf13/viper"
 
 	// "github.com/swaggo/gin-swagger"s
 
@@ -84,7 +83,7 @@ func Initiate() {
 	server.Use(middleware.GinLogger(log))
 	server.Use(ginzap.RecoveryWithZap(log.GetZapLogger().Named("gin.recovery"), true))
 	server.Use(middleware.ErrorHandler())
-	if viper.GetBool("dev") {
+	if true {
 		server.Use(InitCORS())
 	}
 	log.Info(context.Background(), "server initialized")
