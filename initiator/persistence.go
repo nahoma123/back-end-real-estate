@@ -33,8 +33,8 @@ func CreateIndexes(log logger.Logger, db *gorm.DB) {
 	log.Info(context.Background(), "create indexes")
 
 	err := db.Exec(`
-		CREATE UNIQUE INDEX idx_email_phone
-		ON users ( email, phone);
+		CREATE UNIQUE INDEX unique_email
+		ON users ( email);
 	`).Error
 	if err != nil {
 		log.Debug(context.Background(), fmt.Sprintf("create indexes error: %s", err.Error()))

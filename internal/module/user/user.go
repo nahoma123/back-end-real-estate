@@ -161,6 +161,7 @@ func (o *UserModuleWrapper) VerifyForgetPasswordCode(ctx context.Context, userCo
 			o.logger.Warn(ctx, err.Error())
 			return err
 		}
+		return nil
 	}
 
 	return errors.ErrResetCodeInvalid.New("invalid invite code entered")
