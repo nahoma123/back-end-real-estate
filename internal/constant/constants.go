@@ -11,3 +11,7 @@ const (
 	AdminRole       = "ADMIN_ROLE"
 	RegularUserRole = "REGULAR_USER_ROLE"
 )
+
+const (
+	DbValuations = "valuations"
+)
