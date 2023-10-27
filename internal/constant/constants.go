@@ -13,5 +13,17 @@ const (
 )
 
 const (
-	DbValuations = "valuations"
+	DbValuation  = "valuations"
+	DbRealEstate = "real_estates"
+	DbProperties = "properties"
+)
+
+const (
+	ActiveRealEstateStatus   = "Active"
+	CanceledRealEstateStatus = "Cancelled"
+)
+
+const (
+	ActivePropertyStatus   = "Active"
+	CanceledPropertyStatus = "Cancelled"
 )

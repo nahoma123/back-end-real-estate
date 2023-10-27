@@ -79,13 +79,10 @@ func (o *user) VerifyResetCode(ctx context.Context, userCode int, userId, newPas
 
 	user.Password = hash
 
-	if user.ResetCode == userCode && userCode != 0 {
-		user.ResetCode = 0
-		err = o.generic.UpdateOne(ctx, string(storage.Users), user, "user_id", user.UserID)
-		if err != nil {
-			o.logger.Warn(ctx, err.Error())
-			return err
-		}
+	err = o.generic.UpdateOne(ctx, string(storage.Users), user, "user_id", user.UserID)
+	if err != nil {
+		o.logger.Warn(ctx, err.Error())
+		return err
 	}
 
 	return nil

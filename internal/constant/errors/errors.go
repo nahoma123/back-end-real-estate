@@ -3,6 +3,7 @@ package errors
 const (
 	UserIsAlreadyRegistered                  = "user is already registered"
 	EstateIsAlreadyRegistered                = "estate is already registered"
+	PropertyIsAlreadyRegistered              = "property is already registered"
 	DataIsAlreadyRegistered                  = "data is already registered"
 	UnknownDbErrorCountryIsAlreadyRegistered = "country is already registered"
 	RecordNotfound                           = "record not found"

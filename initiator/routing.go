@@ -9,6 +9,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/swag/example/basic/docs"
 
+	"visitor_management/internal/glue/routing/estate"
 	"visitor_management/internal/glue/routing/user"
 	"visitor_management/internal/handler/middleware"
 	"visitor_management/platform/logger"
@@ -26,4 +27,5 @@ func InitRouter(router *gin.Engine, group *gin.RouterGroup, handler Handler, mod
 	// auth.InitRoute(group, handler.oauth, authMiddleware)
 
 	user.InitRoute(group, handler.user, authMiddleware)
+	estate.InitRoute(group, handler.estate, authMiddleware)
 }

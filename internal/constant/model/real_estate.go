@@ -29,15 +29,9 @@ func (es RealEstate) Validate() error {
 	)
 }
 
-// func (es *Invite) ValidateUpdate() error {
-// 	now := time.Now()
-// 	return validation.ValidateStruct(es,
-// 		validation.Field(&es.ResidentID, validation.When(es.ResidentID != "", validation.Required)),
-// 		validation.Field(&es.HouseID, validation.When(es.HouseID != "", validation.Required)),
-// 		validation.Field(&es.StartDate, validation.When(!es.StartDate.IsZero(), validation.Min(now).Error("start_date must be greater than or equal to now"))),
-// 		validation.Field(&es.EndDate, validation.When(!es.EndDate.IsZero(), validation.Min(es.StartDate).Error("end_date must be greater than start_date"))),
-// 	)
-// }
+func (es RealEstate) ValidateUpdate() error {
+	return validation.ValidateStruct(&es)
+}
 
 // func (es *Invite) GenerateInviteCode() string {
 // 	b := make([]byte, 16)

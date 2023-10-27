@@ -11,7 +11,7 @@ import (
 
 func InitiateMigration(db *gorm.DB, log logger.Logger) {
 	// Auto-migrate the database models
-	err := db.AutoMigrate(&model.User{})
+	err := db.AutoMigrate(&model.User{}, &model.RealEstate{}, &model.Property{})
 	if err != nil {
 		log.Error(context.Background(), "Failed to perform database migration", zap.Error(err))
 		return

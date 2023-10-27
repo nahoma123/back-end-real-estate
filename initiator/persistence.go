@@ -13,8 +13,9 @@ import (
 
 type Persistence struct {
 	// TODO implement
-	User    storage.UserStorage
-	Generic storage.GenericStorage
+	User          storage.UserStorage
+	Generic       storage.GenericStorage
+	EstateStorage persistence.EstateStorage
 }
 
 func createDB(host, user, password, dbname, port string) (*gorm.DB, error) {
@@ -45,9 +46,11 @@ func InitPersistence(db *gorm.DB, log logger.Logger) Persistence {
 
 	userStorage := persistence.InitUserDB(db)
 	genericStorage := persistence.InitGenericDB(db)
+	estateStorage := persistence.InitRlEstateDB(db, genericStorage)
 
 	return Persistence{
-		User:    userStorage,
-		Generic: genericStorage,
+		User:          userStorage,
+		Generic:       genericStorage,
+		EstateStorage: estateStorage,
 	}
 }

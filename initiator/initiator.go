@@ -29,6 +29,14 @@ func Initiate() {
 	// if err != nil {
 	// 	log.Fatal(context.Background(), "Error loading .env file")
 	// }
+	london, err := time.LoadLocation("Europe/London")
+	if err != nil {
+		// Handle the error if the time zone cannot be loaded
+		panic(err)
+	}
+
+	// Set the default time zone to London
+	time.Local = london
 
 	log := logger.New(InitLogger())
 	log.Info(context.Background(), "logger initialized")
