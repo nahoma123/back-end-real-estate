@@ -3,6 +3,7 @@ package constant
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -23,10 +24,35 @@ func GetResults(ctx context.Context, db *gorm.DB, tableName string, filterPagina
 	for _, f := range filterPagination.Filters {
 		if f.Operator == "gte" {
 			table = table.Where(fmt.Sprintf("%s >= ?", f.Field), f.Value)
+		} else if f.Operator == "lte" {
+			table = table.Where(fmt.Sprintf("%s <= ?", f.Field), f.Value)
 		} else if f.Operator == "=" {
-			table = table.Where(fmt.Sprintf("%s = ?", f.Field), f.Value)
+			if strings.Contains(f.Value, "||") {
+				values := strings.Split(f.Value, "||")
+
+				// Convert values to []interface{}
+				valueInterfaces := make([]interface{}, len(values))
+				for i, val := range values {
+					valueInterfaces[i] = val
+				}
+
+				table = table.Where(fmt.Sprintf("%s IN (?)", f.Field), valueInterfaces...)
+			} else {
+				table = table.Where(fmt.Sprintf("%s = ?", f.Field), f.Value)
+			}
 		} else if f.Operator == "contains" {
-			table = table.Where(fmt.Sprintf("%s ILIKE ?", f.Field), fmt.Sprintf("%%%s%%", f.Value))
+			if strings.Contains(f.Value, "||") {
+				values := strings.Split(f.Value, "||")
+				orConditions := make([]string, len(values))
+				valueInterfaces := make([]interface{}, len(values))
+				for i, val := range values {
+					orConditions[i] = fmt.Sprintf("%s ILIKE ?", f.Field)
+					valueInterfaces[i] = fmt.Sprintf("%%%s%%", val)
+				}
+				table = table.Where(strings.Join(orConditions, " OR "), valueInterfaces...)
+			} else {
+				table = table.Where(fmt.Sprintf("%s ILIKE ?", f.Field), fmt.Sprintf("%%%s%%", f.Value))
+			}
 		} else if f.Operator == "!=" {
 			table = table.Where(fmt.Sprintf("%s != ?", f.Field), f.Value)
 		} else {

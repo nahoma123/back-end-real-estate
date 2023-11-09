@@ -97,11 +97,10 @@ func (re EstateModule) UpdateProperty(ctx context.Context, propertyId string, pr
 		return err
 	}
 
-	// start prepare to send property post through rabbitmq
-	err = re.gnr.GetOne(ctx, string(constant.DbProperties), property, "property_id", propertyId)
-	if err != nil {
-		return err
-	}
+	// err = re.gnr.GetOne(ctx, string(constant.DbProperties), property, "property_id", propertyId)
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
